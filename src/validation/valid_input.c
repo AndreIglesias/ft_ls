@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 21:38:53 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/10 22:57:45 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/11 11:28:07 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ int		verify_options(int ac, char **av)
 	{
 		if (av[i][0] == '-' && !are_options(&av[i][1]))
 			return (EXIT_FAILURE);
+		if (av[i][0] != '-' && !valid_dirfile(av[i]))
+			return (EXIT_FAILURE);
 		i++;
 	}
 	return (EXIT_SUCCESS);
@@ -46,6 +48,5 @@ int		valid_input(int ac, char **av)
 {
 	if (verify_options(ac, av) == EXIT_FAILURE)
 		return (EXIT_FAILURE + print_usage());
-	//verify_dirdoc();
 	return (EXIT_SUCCESS);
 }
