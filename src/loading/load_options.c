@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   load_flags.c                                       :+:      :+:    :+:   */
+/*   load_options.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/11 12:42:20 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/11 13:30:19 by ciglesia         ###   ########.fr       */
+/*   Created: 2020/11/11 15:20:15 by ciglesia          #+#    #+#             */
+/*   Updated: 2020/11/11 22:28:57 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,11 @@ static void		init_flags(t_flags *flags)
 	flags->r = 0;
 	flags->big_r = 0;
 	flags->t = 0;
-	flags->options = NULL;
+	flags->files = NULL;
+	flags->dirs = NULL;
 }
 
-void			load_options(char *options, t_flags *flags)
+void			load_flags(char *options, t_flags *flags)
 {
 	unsigned int i;
 
@@ -43,7 +44,7 @@ void			load_options(char *options, t_flags *flags)
 	}
 }
 
-void			load_flags(int ac, char **av, t_flags *flags)
+void			load_options(int ac, char **av, t_flags *flags)
 {
 	int		i;
 	t_list	*new;
@@ -53,12 +54,20 @@ void			load_flags(int ac, char **av, t_flags *flags)
 	while (i < ac)
 	{
 		if (av[i][0] == '-')
-			load_options(&av[i][1], flags);
+			load_flags(&av[i][1], flags);
 		if (av[i][0] != '-')
 		{
-			new = ft_lstnew(av[i], sizeof(char *));
-			ft_lstadd(&flags->options, new);
+			new = ft_lstnew(av[i], sizeof(char) * ft_strlen(av[i]));
+			if (!is_dir(av[i]))
+				ft_lstadd(&flags->files, new);
+			else
+				ft_lstadd(&flags->dirs, new);
 		}
 		i++;
+	}
+	if (!flags->dirs && !flags->files)
+	{
+		new = ft_lstnew(".", sizeof(char *));
+		ft_lstadd(&flags->dirs, new);
 	}
 }

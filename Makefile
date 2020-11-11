@@ -6,7 +6,7 @@
 #    By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/11/10 18:02:49 by ciglesia          #+#    #+#              #
-#    Updated: 2020/11/11 13:14:28 by ciglesia         ###   ########.fr        #
+#    Updated: 2020/11/11 15:26:09 by ciglesia         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -34,8 +34,8 @@ DIRVAL		=	$(DIRSRC)/validation/
 
 SRC			=	ft_ls.c
 VALIDATION	=	usage.c valid_input.c valid_dirfile.c
-EXEC		=
-LOADING		=	load_flags.c
+EXEC		=	exec.c
+LOADING		=	load_options.c
 
 SRCS		=	$(SRC) $(VALIDATION) $(EXEC) $(LOADING)
 

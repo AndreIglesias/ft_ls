@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 18:06:16 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/11 13:06:11 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/11 21:49:00 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ typedef struct			s_flags
 	int					a;
 	int					r;
 	int					t;
-	t_list				*options;
+	t_list				*files;
+	t_list				*dirs;
 }						t_flags;
 /*
 typedef struct		s_file
@@ -38,6 +39,8 @@ typedef struct		s_file
 typedef struct			s_collection
 {
 	t_flags				flags;
+	t_list				*dir_content;
+	t_list				*dirs;
 }						t_collection;
 
 /*
@@ -48,11 +51,18 @@ int						valid_input(int ac, char **av);
 int						print_usage(void);
 int						option_unknown(char o);
 int						valid_dirfile(char *filename);
-
+int						is_dir(char *dirname);
+int						is_file(char *filename);
 /*
 ** loading
 */
 
-void					load_flags(int ac, char **av, t_flags *flags);
+void					load_options(int ac, char **av, t_flags *flags);
+
+/*
+** execution
+*/
+
+void					execute_options(t_collection *info);
 
 #endif
