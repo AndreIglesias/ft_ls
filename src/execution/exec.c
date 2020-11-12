@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 15:23:50 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/12 00:56:37 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/12 16:50:07 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ int		is_dot(char *path)
 	int i;
 	int	slash_pos;
 
+	if (!path)
+		return (-1);
 	i = 0;
 	slash_pos = 0;
 	while (path[i])
@@ -48,36 +50,6 @@ int		is_dot(char *path)
 		return (3);
 	}
 	return (0);
-}
-
-void	dir_content(char *path, DIR *pdir, t_collection *info)
-{
-	t_dir	*d;
-	t_list	*new;
-	char	*straux;
-	char	*pathdir;
-
-	while ((d = readdir(pdir)) != NULL)
-	{
-		if (is_dot(d->d_name) == 2)//////////////////////////////
-			continue ;
-		if (path)
-		{
-			straux = ft_strjoin(path, "/");
-			pathdir = ft_strjoin(straux, d->d_name);
-			new = ft_lstnew(pathdir, sizeof(char) * ft_strlen(pathdir));
-			if (is_dir(pathdir))
-				ft_lstadd(&info->dirs, new);
-			ft_lstadd(&info->dir_content, new);
-			free(straux);
-			free(pathdir);
-			continue ;
-		}
-		new = ft_lstnew(d->d_name, sizeof(char) * ft_strlen(d->d_name));
-		if (is_dir(d->d_name))
-			ft_lstadd(&info->dirs, new);
-		ft_lstadd(&info->dir_content, new);
-	}
 }
 
 void	print_content(t_list *content, char *dir, t_collection *info)
@@ -102,28 +74,95 @@ void	print_content(t_list *content, char *dir, t_collection *info)
 		}
 		content = content->next;
 	}
+	ft_printf("\n");
 }
+
+void	dir_content(char *path, DIR *pdir, t_collection *info)
+{
+	t_dir	*d;
+	t_list	*new;
+	char	*straux;
+	char	*pathdir;
+
+	while ((d = readdir(pdir)) != NULL)
+	{
+		if (path)
+		{
+			straux = ft_strjoin(path, "/");
+			pathdir = ft_strjoin(straux, d->d_name);
+			if (is_dir(pathdir))
+			{
+				new = ft_lstnew(pathdir, sizeof(char) * ft_strlen(pathdir));
+				ft_lstadd(&info->dirs, new);
+			}
+			new = ft_lstnew(pathdir, sizeof(char) * ft_strlen(pathdir));
+			ft_lstadd(&info->dir_content, new);
+//			if (is_dir(pathdir))
+//				ft_printf(BLUE "%s is dir\n"E0M, pathdir);
+//			else
+//				ft_printf(RED "%s is not dir\n"E0M, pathdir);
+			free(straux);
+			free(pathdir);
+			continue ;
+		}
+		if (is_dir(d->d_name))
+		{
+			new = ft_lstnew(d->d_name, sizeof(char) * ft_strlen(d->d_name));
+			ft_lstadd(&info->dirs, new);
+		}
+		new = ft_lstnew(d->d_name, sizeof(char) * ft_strlen(d->d_name));
+		ft_lstadd(&info->dir_content, new);
+//		if (is_dir(d->d_name))
+//				ft_printf(BLUE "%s is dir\n"E0M, d->d_name);
+//		else
+//			ft_printf(RED "%s is not dir\n"E0M, d->d_name);
+	}
+}
+
+void	free_colldir(t_collection *info)
+{
+	info->dir_content = NULL;
+	info->dirs = NULL;
+}
+
+void	see_dirs(t_list	*dirs)
+{
+	ft_printf(GREEN"[");
+	while (dirs)
+	{
+		ft_printf("%s ", (char*)dirs->obj);
+		dirs = dirs->next;
+	}
+	ft_printf("]\n"E0M);
+}
+
 void	print_dirs(char *path, t_list *dirs, t_collection *info)
 {
 	DIR		*pdir;
+	char	*dir;
+	char	*next_dirs;
 
 	while (dirs)
 	{
-		info->dir_content = NULL;
-		info->dirs = NULL;
-		if ((pdir = opendir((char *)dirs->obj)) == NULL)
+		dir = (char *)dirs->obj;
+		if (is_dot(dir) > 0 && !info->flags.a && path)
+		{
+			dirs = dirs->next;
+			continue ;
+		}
+		free_colldir(info);
+		if ((pdir = opendir(dir)) == NULL)
 			return ;
 		dir_content(path, pdir, info);
-		print_content(info->dir_content, (char *)dirs->obj, info);
+//		see_dirs(info->dir_content);
+//		see_dirs(info->dirs);
+		print_content(info->dir_content, dir, info);
 		closedir(pdir);
-		ft_printf("\n");
 		if (dirs->next || info->flags.big_r)
 			ft_printf("\n");
-		if (is_dot((char *)info->dirs->obj) != 1 && is_dot((char *)info->dirs->obj) != 2 && info->flags.big_r)
-		{
-			ft_printf("{%s - %s}\n", (char*)info->dirs->obj, (char *)dirs->obj);
-			print_dirs((char *)info->dirs->obj, info->dirs, info);
-		}
+		next_dirs = (char *)info->dirs->obj;
+		if (next_dirs && is_dot(next_dirs) != 1 && is_dot(next_dirs) != 2 && info->flags.big_r)
+			print_dirs(next_dirs, info->dirs, info);
 		dirs = dirs->next;
 	}
 }
