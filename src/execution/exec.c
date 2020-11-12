@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 15:23:50 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/12 16:50:07 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/12 20:02:28 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ void	dir_content(char *path, DIR *pdir, t_collection *info)
 		{
 			straux = ft_strjoin(path, "/");
 			pathdir = ft_strjoin(straux, d->d_name);
+			//ft_printf(RED"ispath %s %s\n", path, d->d_name);
 			if (is_dir(pathdir))
 			{
 				new = ft_lstnew(pathdir, sizeof(char) * ft_strlen(pathdir));
@@ -136,33 +137,46 @@ void	see_dirs(t_list	*dirs)
 	ft_printf("]\n"E0M);
 }
 
+char	*next_notdot(t_list *dirs)
+{
+
+	while (dirs && (is_dot((char *)dirs->obj) == 1 || is_dot((char *)dirs->obj) == 2))
+		dirs = dirs->next;
+	if (dirs)
+		return ((char *)dirs->obj);
+	return (NULL);
+}
+
 void	print_dirs(char *path, t_list *dirs, t_collection *info)
 {
 	DIR		*pdir;
 	char	*dir;
-	char	*next_dirs;
 
 	while (dirs)
 	{
 		dir = (char *)dirs->obj;
-		if (is_dot(dir) > 0 && !info->flags.a && path)
+		if (!(is_dot(dir) > 0 && !info->flags.a && path))
 		{
-			dirs = dirs->next;
-			continue ;
-		}
-		free_colldir(info);
-		if ((pdir = opendir(dir)) == NULL)
-			return ;
-		dir_content(path, pdir, info);
+			free_colldir(info);
+			if ((pdir = opendir(dir)) == NULL)
+				return ;
+			if (ft_strcmp(dir, ".") == 0)
+				path = NULL;
+			else
+				path = dir;
+			dir_content(path, pdir, info);
 //		see_dirs(info->dir_content);
 //		see_dirs(info->dirs);
-		print_content(info->dir_content, dir, info);
-		closedir(pdir);
-		if (dirs->next || info->flags.big_r)
-			ft_printf("\n");
-		next_dirs = (char *)info->dirs->obj;
-		if (next_dirs && is_dot(next_dirs) != 1 && is_dot(next_dirs) != 2 && info->flags.big_r)
-			print_dirs(next_dirs, info->dirs, info);
+			print_content(info->dir_content, dir, info);
+			closedir(pdir);
+			if (dirs->next || info->flags.big_r)
+				ft_printf("\n");
+			if (info->flags.big_r && info->dirs && next_notdot(info->dirs))
+			{
+				print_dirs(next_notdot(info->dirs), info->dirs, info);
+//				info->dirs = info->dirs->next;
+			}
+		}
 		dirs = dirs->next;
 	}
 }
