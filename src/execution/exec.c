@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 15:23:50 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/12 20:02:28 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/12 20:15:53 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,26 @@ void	print_files(t_list *files, t_collection *info)
 	}
 	if (info->flags.files)
 		ft_printf("\n");
+}
+
+char	*after_path(char *path)
+{
+	int i;
+	int	slash_pos;
+
+	if (!path)
+		return (NULL);
+	i = 0;
+	slash_pos = 0;
+	while (path[i])
+	{
+		if (path[i] == '/' && path[i + 1])
+			slash_pos = i;
+		i++;
+	}
+	if (slash_pos == 0)
+		slash_pos = -1;
+	return (&path[slash_pos + 1]);
 }
 
 int		is_dot(char *path)
@@ -54,23 +74,16 @@ int		is_dot(char *path)
 
 void	print_content(t_list *content, char *dir, t_collection *info)
 {
-	char	*path;
-	char	*straux;
-
 	if (info->flags.files || info->flags.dirs->next || info->flags.big_r)
 		ft_printf("%s:\n", dir);
 	while (content)
 	{
 		if (!is_dot((char *)content->obj) || ((is_dot((char *)content->obj) && info->flags.a)))
 		{
-			straux = ft_strjoin(dir, "/");
-			path = ft_strjoin(straux, (char *)content->obj);
-			if (is_dir(path))
-				ft_printf(BLUE"%s  "E0M, (char *)content->obj);
+			if (is_dir((char*)content->obj))
+				ft_printf(BLUE"%s  "E0M, after_path((char *)content->obj));
 			else
-				ft_printf("%s  ", (char *)content->obj);
-			free(straux);
-			free(path);
+				ft_printf("%s  ", after_path((char *)content->obj));
 		}
 		content = content->next;
 	}
