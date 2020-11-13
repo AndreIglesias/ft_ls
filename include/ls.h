@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 18:06:16 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/11 21:49:00 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/12 22:05:53 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,10 @@ int						is_file(char *filename);
 ** loading
 */
 
-void					load_options(int ac, char **av, t_flags *flags);
-
+void					load_options(int ac, char **av, t_flags *flags,
+														t_collection *info);
+void					free_colldir(t_collection *info);
+void					free_dirs(t_list *dirs);
 /*
 ** execution
 */

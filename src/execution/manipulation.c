@@ -1,24 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ls.c                                            :+:      :+:    :+:   */
+/*   manipulation.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/10 18:05:57 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/12 22:02:03 by ciglesia         ###   ########.fr       */
+/*   Created: 2020/11/12 21:57:51 by ciglesia          #+#    #+#             */
+/*   Updated: 2020/11/13 11:54:44 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-int main(int ac, char **av)
+void	alpha_sort(t_list *list)
 {
-	t_collection	info;
 
-	if (valid_input(ac, av) == EXIT_FAILURE)
-		return (EXIT_FAILURE);
-	load_options(ac, av, &info.flags, &info);
-	execute_options(&info);
-	return (EXIT_SUCCESS);
+}
+
+void	reverse_sort(t_list *list)
+{
+
 }

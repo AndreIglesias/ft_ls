@@ -6,13 +6,37 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 15:20:15 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/11 22:28:57 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/12 23:30:05 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-static void		init_flags(t_flags *flags)
+void	free_dirs(t_list *dirs)
+{
+	t_list	*aux;
+
+	while (dirs)
+	{
+		aux = dirs->next;
+		free(dirs->obj);
+		free(dirs);
+		dirs = aux;
+	}
+	dirs = NULL;
+}
+
+void	free_colldir(t_collection *info)
+{
+//	if (info->dir_content)
+//		free_dirs(info->dir_content);
+//	if (info->dirs)
+//		free_dirs(info->dirs);
+	info->dir_content = NULL;
+	info->dirs = NULL;
+}
+
+void		init_collection(t_flags *flags, t_collection *info)
 {
 	flags->l = 0;
 	flags->a = 0;
@@ -21,6 +45,8 @@ static void		init_flags(t_flags *flags)
 	flags->t = 0;
 	flags->files = NULL;
 	flags->dirs = NULL;
+	info->dir_content = NULL;
+	info->dirs = NULL;
 }
 
 void			load_flags(char *options, t_flags *flags)
@@ -44,12 +70,12 @@ void			load_flags(char *options, t_flags *flags)
 	}
 }
 
-void			load_options(int ac, char **av, t_flags *flags)
+void			load_options(int ac, char **av, t_flags *flags, t_collection *c)
 {
 	int		i;
 	t_list	*new;
 
-	init_flags(flags);
+	init_collection(flags, c);
 	i = 1;
 	while (i < ac)
 	{
