@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 18:06:16 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/12 22:05:53 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/13 12:37:47 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,5 +66,5 @@ void					free_dirs(t_list *dirs);
 */
 
 void					execute_options(t_collection *info);
-
+void					alpha_sort(t_list *list);
 #endif

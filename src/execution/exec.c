@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 15:23:50 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/13 11:49:09 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/13 15:17:09 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	print_content(t_list *content, char *dir, t_collection *info)
 		if (!is_dot(cont) || ((is_dot(cont) && info->flags.a)))
 		{
 			if (is_dir(cont))
-				ft_printf(BLUE"%s  "E0M, after_path(cont));
+				ft_printf(BOLD""CEL"%s  "E0M, after_path(cont));
 			else
 				ft_printf("%s  ", after_path(cont));
 		}
@@ -152,6 +152,8 @@ void	print_dirs(char *path, t_list *dirs, t_collection *info)
 			if ((pdir = opendir(dir)) == NULL)
 				return ;
 			dir_content((ft_strcmp(dir, ".") == 0) ? NULL : dir, pdir, info);
+			alpha_sort(info->dirs);
+			alpha_sort(info->dir_content);
 			print_content(info->dir_content, dir, info);
 			closedir(pdir);
 			if (dirs->next || info->flags.big_r)
@@ -165,6 +167,8 @@ void	print_dirs(char *path, t_list *dirs, t_collection *info)
 
 void	execute_options(t_collection *info)
 {
+	alpha_sort(info->flags.files);
+	alpha_sort(info->flags.dirs);
 	print_files(info->flags.files, info);
 	print_dirs(NULL, info->flags.dirs, info);
 
