@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 15:23:50 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/17 22:30:33 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/17 23:21:23 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,12 @@ void	print_content(t_list *content, char *dir, t_collection *info)
 
 	iscont = content;
 	if (info->flags.files || info->flags.dirs->next || info->flags.big_r)
-		ft_printf("%s:\n", dir);
+	{
+		if (!ft_strcmp(".", info->flags.dirs->obj) && !info->flags.dirs->next && info->flags.big_r)
+			ft_printf("./%s:\n", dir);
+		else
+			ft_printf("%s:\n", dir);
+	}
 	while (content)
 	{
 		cont = (char *)content->obj;
