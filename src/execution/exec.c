@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 15:23:50 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/13 15:17:09 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/17 22:30:33 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,22 @@ int		is_dot(char *path)
 	return (0);
 }
 
+char	*next_notdot(t_list *dirs)
+{
+
+	while (dirs && (is_dot((char *)dirs->obj) == 1 || is_dot((char *)dirs->obj) == 2))
+		dirs = dirs->next;
+	if (dirs)
+		return ((char *)dirs->obj);
+	return (NULL);
+}
+
 void	print_content(t_list *content, char *dir, t_collection *info)
 {
 	char	*cont;
+	t_list	*iscont;
 
+	iscont = content;
 	if (info->flags.files || info->flags.dirs->next || info->flags.big_r)
 		ft_printf("%s:\n", dir);
 	while (content)
@@ -90,7 +102,8 @@ void	print_content(t_list *content, char *dir, t_collection *info)
 		}
 		content = content->next;
 	}
-	ft_printf("\n");
+	if (next_notdot(iscont))
+		ft_printf("\n");
 }
 
 void	dir_content(char *path, DIR *pdir, t_collection *info)
@@ -127,21 +140,13 @@ void	dir_content(char *path, DIR *pdir, t_collection *info)
 	}
 }
 
-char	*next_notdot(t_list *dirs)
-{
-
-	while (dirs && (is_dot((char *)dirs->obj) == 1 || is_dot((char *)dirs->obj) == 2))
-		dirs = dirs->next;
-	if (dirs)
-		return ((char *)dirs->obj);
-	return (NULL);
-}
-
 void	print_dirs(char *path, t_list *dirs, t_collection *info)
 {
 	DIR		*pdir;
 	char	*dir;
+	t_list	*felem;
 
+	felem = dirs;
 	while (dirs)
 	{
 		dir = (char *)dirs->obj;
@@ -154,10 +159,10 @@ void	print_dirs(char *path, t_list *dirs, t_collection *info)
 			dir_content((ft_strcmp(dir, ".") == 0) ? NULL : dir, pdir, info);
 			alpha_sort(info->dirs);
 			alpha_sort(info->dir_content);
+			if (dirs != felem)
+				ft_printf("\n");
 			print_content(info->dir_content, dir, info);
 			closedir(pdir);
-			if (dirs->next || info->flags.big_r)
-				ft_printf("\n");
 			if (info->flags.big_r && info->dirs && next_notdot(info->dirs))
 				print_dirs(next_notdot(info->dirs), info->dirs, info);
 		}
@@ -170,6 +175,8 @@ void	execute_options(t_collection *info)
 	alpha_sort(info->flags.files);
 	alpha_sort(info->flags.dirs);
 	print_files(info->flags.files, info);
+	if (info->flags.files && info->flags.dirs)
+		ft_printf("\n");
 	print_dirs(NULL, info->flags.dirs, info);
 
 	//if (info->flags.big_r)
