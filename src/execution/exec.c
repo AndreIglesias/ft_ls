@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 15:23:50 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/17 23:21:23 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/18 00:57:42 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,17 @@ void	dir_content(char *path, DIR *pdir, t_collection *info)
 	}
 }
 
+void	sort_dirs(t_list *d1, t_list *d2, t_collection *info)
+{
+	alpha_sort(d1);
+	alpha_sort(d2);
+	if (info->flags.r)
+	{
+		ft_lstrev(&d1);
+		ft_lstrev(&d2);
+	}
+}
+
 void	print_dirs(char *path, t_list *dirs, t_collection *info)
 {
 	DIR		*pdir;
@@ -162,8 +173,7 @@ void	print_dirs(char *path, t_list *dirs, t_collection *info)
 			if ((pdir = opendir(dir)) == NULL)
 				return ;
 			dir_content((ft_strcmp(dir, ".") == 0) ? NULL : dir, pdir, info);
-			alpha_sort(info->dirs);
-			alpha_sort(info->dir_content);
+			sort_dirs(info->dirs, info->dir_content, info);
 			if (dirs != felem)
 				ft_printf("\n");
 			print_content(info->dir_content, dir, info);
@@ -177,15 +187,9 @@ void	print_dirs(char *path, t_list *dirs, t_collection *info)
 
 void	execute_options(t_collection *info)
 {
-	alpha_sort(info->flags.files);
-	alpha_sort(info->flags.dirs);
+	sort_dirs(info->flags.files, info->flags.dirs, info);
 	print_files(info->flags.files, info);
 	if (info->flags.files && info->flags.dirs)
 		ft_printf("\n");
 	print_dirs(NULL, info->flags.dirs, info);
-
-	//if (info->flags.big_r)
-	//	print_dirs(dirs->inner)
-	//sort flags->files flags->dirs alphabetically, by time or reverse
-	//obtain list & sort alphabetically, by time or reverse
 }

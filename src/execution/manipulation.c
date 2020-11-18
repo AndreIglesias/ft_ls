@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/12 21:57:51 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/13 15:10:27 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/17 23:42:27 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,28 @@ void	alpha_cmp(char *lower, char *lower_next, t_list *aux)
 		aux->next->obj = swap;
 	}
 }
+/*
+void	time_cmp(char *lower, char *lower_next, t_list *aux)
+{
+	char	*swap;
+	int		lp;
+	int		lnp;
 
-void	alpha_sort(t_list *list)
+	lp = 0;
+	lnp = 0;
+	if (lower[0] == '.' && lower[1])
+		lp = 1;
+	if (lower_next[0] == '.' && lower_next[1])
+		lnp = 1;
+	if (ft_strcmp(&lower[lp], &lower_next[lnp]) > 0)
+	{
+		swap = aux->obj;
+		aux->obj = aux->next->obj;
+		aux->next->obj = swap;
+	}
+}
+*/
+void	sorting(t_list *list, void f(char *, char *, t_list *))
 {
 	t_list	*iter;
 	t_list	*aux;
@@ -47,7 +67,7 @@ void	alpha_sort(t_list *list)
 		{
 			lower = ft_lowercase(aux->obj);
 			lower_next = ft_lowercase(aux->next->obj);
-			alpha_cmp(lower, lower_next, aux);
+			f(lower, lower_next, aux);
 			free(lower);
 			free(lower_next);
 			aux = aux->next;
@@ -56,8 +76,12 @@ void	alpha_sort(t_list *list)
 	}
 }
 
+void	alpha_sort(t_list *list)
+{
+	sorting(list, &alpha_cmp);
+}
 /*
-void	reverse_sort(t_list *list)
+void	time_sort(t_list *list)
 {
 
 }
