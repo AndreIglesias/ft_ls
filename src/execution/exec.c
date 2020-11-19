@@ -6,80 +6,82 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 15:23:50 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/19 13:53:54 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/20 00:09:09 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-#if 0
-void	see_dirs(t_list	*dirs)
+void print_type(mode_t imode)
 {
-	ft_printf(GREEN"[");
-	while (dirs)
-	{
-		ft_printf("%s ", (char*)dirs->obj);
-		dirs = dirs->next;
-	}
-	ft_printf("]\n"E0M);
-}
-#endif
-
-void	print_files(t_list *files, t_collection *info)
-{
-	while (files)
-	{
-		ft_printf("%s  ", (char *)files->obj);
-		files = files->next;
-	}
-	if (info->flags.files)
-		ft_printf("\n");
+	if (S_ISLNK(imode))
+		ft_printf("l");
+	if (S_ISREG(imode))
+		ft_printf("-");
+	if (S_ISDIR(imode))
+		ft_printf("d");
+	if (S_ISBLK(imode))
+		ft_printf("b");
+	if (S_ISCHR(imode))
+		ft_printf("c");
+	if (S_ISSOCK(imode))
+		ft_printf("s");
+	if (S_ISFIFO(imode))
+		ft_printf("p");
 }
 
-char	*after_path(char *path)
+void	print_user(uid_t st_uid)
 {
-	int i;
-	int	slash_pos;
+	struct passwd *user;
 
-	if (!path || !path[0])
-		return (NULL);
-	i = 0;
-	slash_pos = 0;
-	while (path[i])
-	{
-		if (path[i] == '/' && path[i + 1])
-			slash_pos = i;
-		i++;
-	}
-	if (slash_pos == 0)
-		slash_pos = -1;
-	return (&path[slash_pos + 1]);
+	user = getpwuid(st_uid);
+	ft_printf("%s ", user->pw_name);
 }
 
-int		is_dot(char *path)
+void	print_grp(gid_t st_gid)
 {
-	char	*after;
+	struct group *grp;
 
-	after = after_path(path);
-	if (after && after[0] && after[0] == '.')
-	{
-		if (!after[1])
-			return (1);
-		if (after[1] == '.' && !after[2])
-			return (2);
-		return (3);
-	}
-	return (0);
+	grp = getgrgid(st_gid);
+	ft_printf("%s ", grp->gr_name);
 }
 
-char	*next_notdot(t_list *dirs)
+void	print_permissions(mode_t st_mode)
 {
+		ft_printf("%c", (st_mode & S_IRUSR) ? 'r' : '-');
+		ft_printf("%c", (st_mode & S_IWUSR) ? 'w' : '-');
+		ft_printf("%c", (st_mode & S_IXUSR) ? 'x' : '-');
+		ft_printf("%c", (st_mode & S_IRGRP) ? 'r' : '-');
+		ft_printf("%c", (st_mode & S_IWGRP) ? 'w' : '-');
+		ft_printf("%c", (st_mode & S_IXGRP) ? 'x' : '-');
+		ft_printf("%c", (st_mode & S_IROTH) ? 'r' : '-');
+		ft_printf("%c", (st_mode & S_IWOTH) ? 'w' : '-');
+		ft_printf("%c", (st_mode & S_IXOTH) ? 'x' : '-');
+		ft_printf(". ");
+}
 
-	while (dirs && (is_dot((char *)dirs->obj) == 1 || is_dot((char *)dirs->obj) == 2))
-		dirs = dirs->next;
-	if (dirs)
-		return ((char *)dirs->obj);
-	return (NULL);
+void	print_element(char *cont, t_collection *info)
+{
+	if (!is_dot(cont) || ((is_dot(cont) && info->flags.a)))
+	{
+		if (info->flags.l)
+		{
+			stat(cont, &info->buf);
+			print_type(info->buf.st_mode);
+			print_permissions(info->buf.st_mode);
+			ft_printf("%d ", info->buf.st_nlink);
+			print_user(info->buf.st_uid);
+			print_grp(info->buf.st_gid);
+			ft_printf("%5d ", info->buf.st_size);
+			ft_printf("%.12s ", &ctime(&info->buf.st_mtim.tv_sec)[4]);
+		}
+		if (is_dir(cont))
+			ft_printf(BOLD""CEL"%s  "E0M, after_path(cont));
+		else
+			ft_printf("%s  ", after_path(cont));
+		if (info->flags.l)
+			ft_printf("\n");
+	}
 }
 
 void	print_content(t_list *content, char *dir, t_collection *info)
@@ -99,16 +101,10 @@ void	print_content(t_list *content, char *dir, t_collection *info)
 	while (content)
 	{
 		cont = (char *)content->obj;
-		if (!is_dot(cont) || ((is_dot(cont) && info->flags.a)))
-		{
-			if (is_dir(cont))
-				ft_printf(BOLD""CEL"%s  "E0M, after_path(cont));
-			else
-				ft_printf("%s  ", after_path(cont));
-		}
+		print_element(cont, info);
 		content = content->next;
 	}
-	if (next_notdot(iscont))
+	if (next_notdot(iscont) && !info->flags.l)
 		ft_printf("\n");
 }
 
@@ -146,17 +142,6 @@ void	dir_content(char *path, DIR *pdir, t_collection *info)
 	}
 }
 
-void	sort_dirs(t_list *d1, t_list *d2, t_collection *info)
-{
-	alpha_sort(d1);
-	alpha_sort(d2);
-	if (info->flags.r)
-	{
-		ft_lstrev(&d1);
-		ft_lstrev(&d2);
-	}
-}
-
 void	print_dirs(char *path, t_list *dirs, t_collection *info)
 {
 	DIR		*pdir;
@@ -188,6 +173,8 @@ void	print_dirs(char *path, t_list *dirs, t_collection *info)
 
 void	execute_options(t_collection *info)
 {
+	if (info->flags.l)
+		ft_printf("total\n");
 	sort_dirs(info->flags.files, info->flags.dirs, info);
 	print_files(info->flags.files, info);
 	if (info->flags.files && info->flags.dirs)

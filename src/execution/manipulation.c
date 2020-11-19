@@ -5,84 +5,91 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/11/12 21:57:51 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/17 23:42:27 by ciglesia         ###   ########.fr       */
+/*   Created: 2020/11/19 17:57:14 by ciglesia          #+#    #+#             */
+/*   Updated: 2020/11/19 17:59:08 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
-void	alpha_cmp(char *lower, char *lower_next, t_list *aux)
+#if 0
+void	see_dirs(t_list	*dirs)
 {
-	char	*swap;
-	int		lp;
-	int		lnp;
-
-	lp = 0;
-	lnp = 0;
-	if (lower[0] == '.' && lower[1])
-		lp = 1;
-	if (lower_next[0] == '.' && lower_next[1])
-		lnp = 1;
-	if (ft_strcmp(&lower[lp], &lower_next[lnp]) > 0)
+	ft_printf(GREEN"[");
+	while (dirs)
 	{
-		swap = aux->obj;
-		aux->obj = aux->next->obj;
-		aux->next->obj = swap;
+		ft_printf("%s ", (char*)dirs->obj);
+		dirs = dirs->next;
+	}
+	ft_printf("]\n"E0M);
+}
+#endif
+
+void	print_files(t_list *files, t_collection *info)
+{
+	while (files)
+	{
+		ft_printf("%s  ", (char *)files->obj);
+		files = files->next;
+	}
+	if (info->flags.files)
+		ft_printf("\n");
+}
+
+char	*after_path(char *path)
+{
+	int i;
+	int	slash_pos;
+
+	if (!path || !path[0])
+		return (NULL);
+	i = 0;
+	slash_pos = 0;
+	while (path[i])
+	{
+		if (path[i] == '/' && path[i + 1])
+			slash_pos = i;
+		i++;
+	}
+	if (slash_pos == 0)
+		slash_pos = -1;
+	return (&path[slash_pos + 1]);
+}
+
+int		is_dot(char *path)
+{
+	char	*after;
+
+	after = after_path(path);
+	if (after && after[0] && after[0] == '.')
+	{
+		if (!after[1])
+			return (1);
+		if (after[1] == '.' && !after[2])
+			return (2);
+		return (3);
+	}
+	return (0);
+}
+
+char	*next_notdot(t_list *dirs)
+{
+
+	while (dirs && (is_dot((char *)dirs->obj) == 1 ||
+					is_dot((char *)dirs->obj) == 2))
+		dirs = dirs->next;
+	if (dirs)
+		return ((char *)dirs->obj);
+	return (NULL);
+}
+
+void	sort_dirs(t_list *d1, t_list *d2, t_collection *info)
+{
+	alpha_sort(d1);
+	alpha_sort(d2);
+	if (info->flags.r)
+	{
+		ft_lstrev(&d1);
+		ft_lstrev(&d2);
 	}
 }
-/*
-void	time_cmp(char *lower, char *lower_next, t_list *aux)
-{
-	char	*swap;
-	int		lp;
-	int		lnp;
-
-	lp = 0;
-	lnp = 0;
-	if (lower[0] == '.' && lower[1])
-		lp = 1;
-	if (lower_next[0] == '.' && lower_next[1])
-		lnp = 1;
-	if (ft_strcmp(&lower[lp], &lower_next[lnp]) > 0)
-	{
-		swap = aux->obj;
-		aux->obj = aux->next->obj;
-		aux->next->obj = swap;
-	}
-}
-*/
-void	sorting(t_list *list, void f(char *, char *, t_list *))
-{
-	t_list	*iter;
-	t_list	*aux;
-	char	*lower;
-	char	*lower_next;
-
-	iter = list;
-	while (iter && iter->next)
-	{
-		aux = list;
-		while (aux && aux->next)
-		{
-			lower = ft_lowercase(aux->obj);
-			lower_next = ft_lowercase(aux->next->obj);
-			f(lower, lower_next, aux);
-			free(lower);
-			free(lower_next);
-			aux = aux->next;
-		}
-		iter = iter->next;
-	}
-}
-
-void	alpha_sort(t_list *list)
-{
-	sorting(list, &alpha_cmp);
-}
-/*
-void	time_sort(t_list *list)
-{
-
-}
-*/

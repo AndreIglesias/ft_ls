@@ -1,0 +1,5 @@
+./ft_ls tmp alphabetic sort
+./ft_ls /
+symbolic
+total -l
+time sort

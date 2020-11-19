@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 18:06:16 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/13 12:37:47 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/19 22:57:09 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,14 @@
 
 # include "libft.h"
 # include <dirent.h>
+# include <sys/stat.h>
+# include <stdlib.h>
+# include <stdio.h>
+# include <time.h>
+# include <sys/types.h>
+# include <pwd.h>
+# include <uuid/uuid.h>
+# include <grp.h>
 
 typedef struct dirent	t_dir;
 
@@ -41,6 +49,7 @@ typedef struct			s_collection
 	t_flags				flags;
 	t_list				*dir_content;
 	t_list				*dirs;
+	struct stat 		buf;
 }						t_collection;
 
 /*
@@ -67,4 +76,10 @@ void					free_dirs(t_list *dirs);
 
 void					execute_options(t_collection *info);
 void					alpha_sort(t_list *list);
+void					print_files(t_list *files, t_collection *info);
+char					*after_path(char *path);
+int						is_dot(char *path);
+char					*next_notdot(t_list *dirs);
+void					sort_dirs(t_list *d1, t_list *d2, t_collection *info);
+
 #endif

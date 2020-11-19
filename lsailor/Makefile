@@ -6,11 +6,11 @@
 #    By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/11/10 18:02:49 by ciglesia          #+#    #+#              #
-#    Updated: 2020/11/19 13:05:53 by ciglesia         ###   ########.fr        #
+#    Updated: 2020/11/19 19:10:55 by ciglesia         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
-NAME		=	../lsail
+NAME		=	lsail
 
 #****************** INC *******************#
 # General
@@ -22,8 +22,7 @@ INCFT		=	../libft/include/
 
 INCLUDE		=	-I $(INCFT) -I $(INC)
 
-INC_LIB		=	-L$(LIB) -lft
-
+INC_LIB		=	-L$(LIB) -lft -lncurses
 
 #***************** SRC *******************#
 
@@ -31,13 +30,15 @@ DIRSRC		=	./src/
 DIRLOAD		=	$(DIRSRC)/loading/
 DIREXE		=	$(DIRSRC)/execution/
 DIRVAL		=	$(DIRSRC)/validation/
+DIRINT		=	$(DIRSRC)/interface/
 
 SRC			=	lsail.c
-VALIDATION	=
+VALIDATION	=	valid_input.c
 EXEC		=
 LOADING		=
+INTERFACE	=	display.c
 
-SRCS		=	$(SRC) $(VALIDATION) $(EXEC) $(LOADING)
+SRCS		=	$(SRC) $(VALIDATION) $(EXEC) $(LOADING) $(INTERFACE)
 
 #***************** DEPS ******************#
 
@@ -74,6 +75,9 @@ ECHO		=	/bin/echo -e
 				$(CC) $(CFLAGS) $(INCLUDE) -MMD -o $@ -c $<
 
 %.o		:		../$(DIRLOAD)/%.c
+				$(CC) $(CFLAGS) $(INCLUDE) -MMD -o $@ -c $<
+
+%.o		:		../$(DIRINT)/%.c
 				$(CC) $(CFLAGS) $(INCLUDE) -MMD -o $@ -c $<
 
 #************************ MAIN COMPILATION *************************
