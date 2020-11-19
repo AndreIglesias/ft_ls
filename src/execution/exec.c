@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 15:23:50 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/18 00:57:42 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/19 13:53:54 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,8 @@ void	print_content(t_list *content, char *dir, t_collection *info)
 	iscont = content;
 	if (info->flags.files || info->flags.dirs->next || info->flags.big_r)
 	{
-		if (!ft_strcmp(".", info->flags.dirs->obj) && !info->flags.dirs->next && info->flags.big_r)
+		if (!ft_strcmp(".", info->flags.dirs->obj) && !info->flags.dirs->next &&
+			info->flags.big_r && ft_strcmp(".", dir))
 			ft_printf("./%s:\n", dir);
 		else
 			ft_printf("%s:\n", dir);
@@ -174,7 +175,7 @@ void	print_dirs(char *path, t_list *dirs, t_collection *info)
 				return ;
 			dir_content((ft_strcmp(dir, ".") == 0) ? NULL : dir, pdir, info);
 			sort_dirs(info->dirs, info->dir_content, info);
-			if (dirs != felem)
+			if (path || (!path && dirs != felem))
 				ft_printf("\n");
 			print_content(info->dir_content, dir, info);
 			closedir(pdir);

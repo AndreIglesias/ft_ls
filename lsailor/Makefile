@@ -6,26 +6,24 @@
 #    By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/11/10 18:02:49 by ciglesia          #+#    #+#              #
-#    Updated: 2020/11/19 13:20:56 by ciglesia         ###   ########.fr        #
+#    Updated: 2020/11/19 13:05:53 by ciglesia         ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
-NAME		=	ft_ls
+NAME		=	../lsail
 
 #****************** INC *******************#
 # General
 INC			=	./include/
 
 # Libft
-SUB_MAKE	=	./libft/
-INCFT		=	./libft/include/
+LIB			=	../libft/
+INCFT		=	../libft/include/
 
 INCLUDE		=	-I $(INCFT) -I $(INC)
 
-INC_LIB		=	-L$(SUB_MAKE) -lft
+INC_LIB		=	-L$(LIB) -lft
 
-# lsailor
-BONUS_MAKE	=	./lsailor/
 
 #***************** SRC *******************#
 
@@ -34,10 +32,10 @@ DIRLOAD		=	$(DIRSRC)/loading/
 DIREXE		=	$(DIRSRC)/execution/
 DIRVAL		=	$(DIRSRC)/validation/
 
-SRC			=	ft_ls.c
-VALIDATION	=	usage.c valid_input.c valid_dirfile.c
-EXEC		=	exec.c manipulation.c
-LOADING		=	load_options.c
+SRC			=	lsail.c
+VALIDATION	=
+EXEC		=
+LOADING		=
 
 SRCS		=	$(SRC) $(VALIDATION) $(EXEC) $(LOADING)
 
@@ -80,32 +78,22 @@ ECHO		=	/bin/echo -e
 
 #************************ MAIN COMPILATION *************************
 
-$(NAME)	:		ftlib $(OBJS)
+$(NAME)	:		$(OBJS)
 				@$(CC)  $(INCLUDE) $(CFLAGS) -o $(NAME) $(OBJS) $(INC_LIB)
 				@$(ECHO) '> Compiled'
 
 clean	:
 				@($(RM) $(OBJS))
 				@($(RM) $(DEPS))
-				@(cd $(SUB_MAKE) && $(MAKE) clean)
-				@(cd $(BONUS_MAKE) && $(MAKE) clean)
 				@$(ECHO) '> Directory cleaned'
 
 all		:		$(NAME)
 
 fclean	:		clean
 				@$(RM) $(NAME)
-				@(cd $(SUB_MAKE) && $(MAKE) fclean)
-				@(cd $(BONUS_MAKE) && $(MAKE) fclean)
 				@$(ECHO) '> Remove executable'
 
 re		:		fclean all
-
-ftlib	:
-				@(cd $(SUB_MAKE) && $(MAKE))
-
-bonus	:		ftlib
-				@(cd $(BONUS_MAKE) && $(MAKE))
 
 .PHONY	:		all clean re
 
