@@ -6,16 +6,38 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 11:23:40 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/20 17:46:48 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/20 18:52:22 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ls.h"
 
+int		can_openf(char *filename)
+{
+	int fd;
+
+	if ((fd = open(filename, O_RDONLY) < 0) || read(fd, NULL, 0))
+		return (0);
+	close(fd);
+	return (1);
+}
+
 int		is_file(char *filename)
 {
 	int		fd;
+	t_stat	buf;
 
+	lstat(filename, &buf);
+	if (S_ISLNK(buf.st_mode))
+		return (1);
+	if (S_ISREG(buf.st_mode))
+		return (1);
+	if (S_ISCHR(buf.st_mode))
+		return (1);
+	if (S_ISSOCK(buf.st_mode))
+		return (1);
+	if (S_ISFIFO(buf.st_mode))
+		return (1);
 	if ((fd = open(filename, O_RDONLY) < 0) || read(fd, NULL, 0))
 		return (0);
 	close(fd);

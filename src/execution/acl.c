@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 23:21:00 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/20 16:31:59 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/20 19:04:04 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,6 @@
 
 void print_type(mode_t imode)
 {
-	switch (imode & S_IFMT) {
-	case S_IFBLK:  ft_printf("b"); break;
-	case S_IFCHR:  ft_printf("c"); break;
-	case S_IFDIR:  ft_printf("d"); break;
-	case S_IFIFO:  ft_printf("p"); break;
-	case S_IFLNK:  ft_printf("l"); break;
-	case S_IFREG:  ft_printf("-"); break;
-	case S_IFSOCK: ft_printf("s"); break;
-	default:       ft_printf("?"); break;
-           }
-	/*
 	if (S_ISLNK(imode))
 		ft_printf("l");
 	if (S_ISREG(imode))
@@ -40,7 +29,6 @@ void print_type(mode_t imode)
 		ft_printf("s");
 	if (S_ISFIFO(imode))
 		ft_printf("p");
-	*/
 }
 
 void	print_user(uid_t st_uid)
@@ -75,7 +63,9 @@ void	print_permissions(mode_t st_mode)
 
 void	color_nonlink(char *cont, t_collection *info, int apath)
 {
-	if (S_ISLNK(info->buf.st_mode))
+	if (!is_dir(cont) && !can_openf(cont))
+		ft_printf(BOLD""RED"%s"E0M"  ", (apath) ? after_path(cont) : cont);
+	else if (S_ISLNK(info->buf.st_mode))
 		ft_printf(BOLD""CYAN"%s  "E0M, (apath) ? after_path(cont) : cont);
 	else if (info->buf.st_nlink > 1)
 		ft_printf(BOLD""GREEN"%s  "E0M, (apath) ? after_path(cont) : cont);
@@ -99,8 +89,11 @@ void	color_element(char *cont, t_collection *info, int apath)
 		buf = malloc(bufsiz);
 		nbytes = readlink(cont, buf, bufsiz);
 		buf[nbytes] = '\0';
-		ft_printf(BOLD""CYAN"%s"E0M""BOLD" -> "E0M, after_path(cont));
 		lstat(buf, &info->buf);
+		if (!is_dir(cont) && !can_openf(cont))
+			ft_printf(BOLD""RED"%s"E0M""BOLD" -> "REVER, after_path(cont));
+		else
+			ft_printf(BOLD""CYAN"%s"E0M""BOLD" -> "E0M, after_path(cont));
 		color_nonlink(buf, info, 0);
 	}
 	else

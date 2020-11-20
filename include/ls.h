@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 18:06:16 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/20 17:33:59 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/20 18:52:09 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ int						option_unknown(char o);
 int						valid_dirfile(char *filename);
 int						is_dir(char *dirname);
 int						is_file(char *filename);
+int						can_openf(char *filename);
+
 /*
 ** loading
 */
@@ -74,6 +76,7 @@ void					load_options(int ac, char **av, t_flags *flags,
 														t_collection *info);
 void					free_colldir(t_collection *info);
 void					free_dirs(t_list *dirs);
+
 /*
 ** execution
 */
