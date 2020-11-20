@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 18:06:16 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/19 22:57:09 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/20 16:28:13 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ typedef struct			s_collection
 	t_flags				flags;
 	t_list				*dir_content;
 	t_list				*dirs;
+	int					total;
+	size_t				size_spacing;
 	struct stat 		buf;
 }						t_collection;
 
@@ -81,5 +83,5 @@ char					*after_path(char *path);
 int						is_dot(char *path);
 char					*next_notdot(t_list *dirs);
 void					sort_dirs(t_list *d1, t_list *d2, t_collection *info);
-
+void					print_element(char *cont, t_collection *info);
 #endif
