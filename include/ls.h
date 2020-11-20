@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 18:06:16 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/20 16:28:13 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/20 17:33:59 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
 # include <grp.h>
 
 typedef struct dirent	t_dir;
+
+typedef struct stat		t_stat;
 
 typedef struct			s_flags
 {

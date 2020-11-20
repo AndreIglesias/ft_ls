@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 11:23:40 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/11 16:53:41 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/20 17:46:48 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int		is_file(char *filename)
 {
-	int fd;
+	int		fd;
 
 	if ((fd = open(filename, O_RDONLY) < 0) || read(fd, NULL, 0))
 		return (0);
@@ -35,10 +35,12 @@ int		is_dir(char *dirname)
 int		valid_dirfile(char *filename)
 {
 	int ret;
+	t_stat	buf;
 
 	ret = 0;
 	if (!is_file(filename))
 		ret++;
+	lstat(filename, &buf);
 	if (!is_dir(filename))
 		ret++;
 	if (ret == 2)

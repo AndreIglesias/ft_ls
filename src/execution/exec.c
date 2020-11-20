@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 15:23:50 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/20 16:28:44 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/20 17:34:47 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	add_content(char *content, t_collection *info)
 {
 	t_list	*new;
 
-	if (is_dir(content))
+	if (is_dir(content) && !S_ISLNK(info->buf.st_mode))
 	{
 		new = ft_lstnew2(ft_strdup(content), sizeof(char) * ft_strlen(content));
 		ft_lstadd(&info->dirs, new);

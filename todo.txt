@@ -1,5 +1,2 @@
-./ft_ls -Rr (symbolic dirs) dont print symbolic dirs!
 ./ft_ls /
-./ft_ls -l file ACL
-total -l
 time sort

@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 17:57:14 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/19 17:59:08 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/20 17:31:13 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,11 @@ void	print_files(t_list *files, t_collection *info)
 {
 	while (files)
 	{
-		ft_printf("%s  ", (char *)files->obj);
+		//ft_printf("%s  ", (char *)files->obj);
+		print_element(files->obj, info);
 		files = files->next;
 	}
-	if (info->flags.files)
+	if (info->flags.files && !info->flags.l)
 		ft_printf("\n");
 }
 
