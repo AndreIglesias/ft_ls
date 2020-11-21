@@ -1,2 +1,3 @@
-./ft_ls /
-time sort
+./ft_ls -rtR /
+./ft_ls -l /home/ciglesia/.cache/mozilla/firefox/rs4zrv6x.default-release/cache2/entries
+./ft_ls /lost+found

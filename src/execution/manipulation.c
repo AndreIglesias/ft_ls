@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 17:57:14 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/20 17:31:13 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/21 12:55:20 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	print_files(t_list *files, t_collection *info)
 {
 	while (files)
 	{
-		//ft_printf("%s  ", (char *)files->obj);
 		print_element(files->obj, info);
 		files = files->next;
 	}
@@ -49,12 +48,10 @@ char	*after_path(char *path)
 	while (path[i])
 	{
 		if (path[i] == '/' && path[i + 1])
-			slash_pos = i;
+			slash_pos = i + 1;
 		i++;
 	}
-	if (slash_pos == 0)
-		slash_pos = -1;
-	return (&path[slash_pos + 1]);
+	return (&path[slash_pos]);
 }
 
 int		is_dot(char *path)
@@ -86,8 +83,16 @@ char	*next_notdot(t_list *dirs)
 
 void	sort_dirs(t_list *d1, t_list *d2, t_collection *info)
 {
-	alpha_sort(d1);
-	alpha_sort(d2);
+	if (info->flags.t)
+	{
+		time_sort(d1);
+		time_sort(d2);
+	}
+	else
+	{
+		alpha_sort(d1);
+		alpha_sort(d2);
+	}
 	if (info->flags.r)
 	{
 		ft_lstrev(&d1);

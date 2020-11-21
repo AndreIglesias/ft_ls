@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 15:23:50 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/20 17:34:47 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/21 12:20:47 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,13 @@ void	add_content(char *content, t_collection *info)
 
 int		content_measurements(char *path, t_collection *info)
 {
-	lstat(path, &info->buf);
+	if (lstat(path, &info->buf) == -1)
+		return (0);
 	add_content(path, info);
 	if (ft_sizei(info->buf.st_size) > info->size_spacing)
 		info->size_spacing = ft_sizei(info->buf.st_size);
+	if (ft_sizei(info->buf.st_nlink) > info->links_spacing)
+		info->links_spacing = ft_sizei(info->buf.st_nlink);
 	if (!(is_dot(path) && !info->flags.a))
 		return (info->buf.st_blocks);
 	return (0);
@@ -71,11 +74,15 @@ void	dir_content(char *path, DIR *pdir, t_collection *info)
 
 	total = 0;
 	info->size_spacing = 0;
+	info->links_spacing = 0;
 	while ((d = readdir(pdir)) != NULL)
 	{
 		if (path)
 		{
-			straux = ft_strjoin(path, "/");
+			if (ft_strcmp(path, "/") != 0)
+				straux = ft_strjoin(path, "/");
+			else
+				straux = ft_strdup(path);
 			pathdir = ft_strjoin(straux, d->d_name);
 			total += content_measurements(pathdir, info);
 			free(straux);
