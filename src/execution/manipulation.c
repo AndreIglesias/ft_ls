@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 17:57:14 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/21 12:55:20 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/21 23:38:12 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,37 @@ char	*next_notdot(t_list *dirs)
 	return (NULL);
 }
 
+void	n_content(char *path, t_collection *info)
+{
+	size_t	cont_count;
+	size_t	dir_count;
+	DIR		*pdir;
+	t_dir	*entry;
+
+	dir_count = 0;
+	cont_count = 0;
+	if ((pdir = opendir(path)) == NULL)
+		return ;
+	while ((entry = readdir(pdir)) != NULL)
+	{
+		if (entry->d_type == DT_DIR)
+			dir_count++;
+		cont_count++;
+	}
+	closedir(pdir);
+	if (!(info->dc = (t_list**)malloc(sizeof(t_list*) * cont_count)))
+		exit(EXIT_FAILURE);
+	if (!(info->dd = (t_list**)malloc(sizeof(t_list*) * dir_count)))
+		exit(EXIT_FAILURE);
+	info->ndc = 0;
+	info->ndd = 0;
+}
+
 void	sort_dirs(t_list *d1, t_list *d2, t_collection *info)
 {
+	ft_quicksort(info->dc, info->ndc, &alpha_cmp);
+	ft_quicksort(info->dd, info->ndd, &alpha_cmp);
+	/*
 	if (info->flags.t)
 	{
 		time_sort(d1);
@@ -93,6 +122,7 @@ void	sort_dirs(t_list *d1, t_list *d2, t_collection *info)
 		alpha_sort(d1);
 		alpha_sort(d2);
 	}
+	*/
 	if (info->flags.r)
 	{
 		ft_lstrev(&d1);

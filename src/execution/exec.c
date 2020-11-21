@@ -6,7 +6,7 @@
 /*   By: ciglesia <ciglesia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 15:23:50 by ciglesia          #+#    #+#             */
-/*   Updated: 2020/11/21 12:20:47 by ciglesia         ###   ########.fr       */
+/*   Updated: 2020/11/22 00:51:24 by ciglesia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	print_content(t_list *content, char *dir, t_collection *info)
 {
 	char	*cont;
 	t_list	*iscont;
+	size_t	i;
 
 	iscont = content;
 	if (info->flags.files || info->flags.dirs->next || info->flags.big_r)
@@ -28,11 +29,11 @@ void	print_content(t_list *content, char *dir, t_collection *info)
 	}
 	if (info->flags.l)
 		ft_printf("total %d\n", info->total / 2);
-	while (content)
+	i = 0;
+	while (i < info->ndc)
 	{
-		cont = (char *)content->obj;
+		cont = (char *)info->dc[i++]->obj;
 		print_element(cont, info);
-		content = content->next;
 	}
 	if (next_notdot(iscont) && !info->flags.l)
 		ft_printf("\n");
@@ -45,9 +46,11 @@ void	add_content(char *content, t_collection *info)
 	if (is_dir(content) && !S_ISLNK(info->buf.st_mode))
 	{
 		new = ft_lstnew2(ft_strdup(content), sizeof(char) * ft_strlen(content));
+		info->dd[info->ndd++] = new;
 		ft_lstadd(&info->dirs, new);
 	}
 	new = ft_lstnew2(ft_strdup(content), sizeof(char) * ft_strlen(content));
+	info->dc[info->ndc++] = new;
 	ft_lstadd(&info->dir_content, new);
 }
 
@@ -110,8 +113,8 @@ void	print_dirs(char *path, t_list *dirs, t_collection *info)
 			free_colldir(info);
 			if ((pdir = opendir(dir)) == NULL)
 				return ;
-			if (path || (!path && dirs != felem))
-				ft_printf("\n");
+			(path || (!path && dirs != felem)) ? ft_printf("\n") : 0;
+			n_content(dir, info);
 			dir_content((ft_strcmp(dir, ".") == 0) ? NULL : dir, pdir, info);
 			sort_dirs(info->dirs, info->dir_content, info);
 			print_content(info->dir_content, dir, info);
