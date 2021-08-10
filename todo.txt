@@ -1,4 +1,0 @@
-./ft_ls -rtR /
-./ft_ls -l /home/ciglesia/.cache/mozilla/firefox/rs4zrv6x.default-release/cache2/entries DONE
-./ft_ls /lost+found
-./ft_ls /usr/share//foomatic/db/source/printer
